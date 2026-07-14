@@ -2,11 +2,14 @@
 
 pnpm workspace. Apps live in `apps/*`, shared code in `packages/*`, contracts in `contracts/`.
 
-| App | Package | Purpose | Local dev |
+| App | Package | Purpose | Local dev (from repo root) |
 | --- | --- | --- | --- |
-| `apps/landing` | `@erebuz/landing` | Marketing site (erebuz.com) | `pnpm --filter @erebuz/landing dev` |
-| `apps/docs` | `@erebuz/docs` | Fumadocs documentation | `pnpm --filter @erebuz/docs dev` (port 3001) |
-| `apps/app` | `@erebuz/app` | wall8 app (private transfers) | `pnpm --filter @erebuz/app dev` |
+| `apps/landing` | `@erebuz/landing` | Marketing site (erebuz.com) | `pnpm landing` |
+| `apps/docs` | `@erebuz/docs` | Fumadocs documentation | `pnpm docs` (port 3001) |
+| `apps/app` | `@erebuz/app` | wall8 app (private transfers) | `pnpm app` |
+| `packages/tee` | `@erebuz/tee` | TEE service (private-route API) | `pnpm tee` |
+
+`pnpm dev` runs every workspace dev script in parallel. Do NOT pass an app name to it (`pnpm dev app` breaks — the extra arg is forwarded to every child `next dev`); use the per-app shortcuts above.
 
 ## Git: two remotes, keep both in sync
 
