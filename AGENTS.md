@@ -7,6 +7,7 @@ pnpm workspace. Apps live in `apps/*`, shared code in `packages/*`, contracts in
 | `apps/landing` | `@erebuz/landing` | Marketing site (erebuz.com) | `pnpm landing` |
 | `apps/docs` | `@erebuz/docs` | Fumadocs documentation | `pnpm docs` (port 3001) |
 | `apps/app` | `@erebuz/app` | wall8 app (private transfers) | `pnpm app` |
+| `apps/deck` | `@erebuz/deck` | Investor deck (email-gated slides) | `pnpm deck` (port 3002) |
 | `packages/tee` | `@erebuz/tee` | TEE service (private-route API) | `pnpm tee` |
 
 `pnpm dev` runs every workspace dev script in parallel. Do NOT pass an app name to it (`pnpm dev app` breaks — the extra arg is forwarded to every child `next dev`); use the per-app shortcuts above.
@@ -69,4 +70,5 @@ pnpm --filter @erebuz/app build
 
 - `apps/landing` — the "Get access" buttons open a waitlist dialog ([Waitlist.tsx](apps/landing/src/components/Waitlist.tsx)) that POSTs emails into a Google Form (ids at the top of that file). Docs CTAs are intentionally "Coming soon" until docs ship publicly.
 - `apps/docs` — Fumadocs with the better-auth-style design (black preset + Geist, custom sidebar in `components/docs-sidebar.tsx`, nav data in `components/sidebar-content.tsx`). When docs pages are added/removed, update `sidebar-content.tsx` and `content/docs/meta.json` together.
+- `apps/deck` — Next.js port of the bolt-slides engine, landing-site theme. The email gate ([EmailGate.tsx](apps/deck/src/EmailGate.tsx)) must use its OWN Google Form (`DECK_FORM_ID`), never the landing waitlist's — deck leads and waitlist signups stay in separate sheets.
 - `apps/app` — wallet connection is RainbowKit + wagmi v2 (`src/lib/wagmi.ts`, `src/components/web3-provider.tsx`). RainbowKit's `getDefaultConfig` is client-only: never import `lib/wagmi.ts` from a server component. `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` must be set for the WalletConnect QR flow. Next.js here is v16 — read `node_modules/next/dist/docs/` before assuming App Router APIs.
