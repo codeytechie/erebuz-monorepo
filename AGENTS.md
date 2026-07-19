@@ -45,7 +45,7 @@ CLI is logged in as `codeytechie`, team `codeytechies-projects`. Git pushes auto
 | --- | --- | --- |
 | `erebuz-landing` | repo root | www.erebuz.com |
 | `erebuz-docs` | `apps/docs` | (vercel.app URL until docs domain is set) |
-| `erebuz-deck` | `apps/deck` | erebuz-deck.vercel.app |
+| `erebuz-deck` | `apps/deck` | deck.erebuz.com |
 
 ```bash
 # landing
