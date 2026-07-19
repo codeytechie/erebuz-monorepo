@@ -45,6 +45,7 @@ CLI is logged in as `codeytechie`, team `codeytechies-projects`. Git pushes auto
 | --- | --- | --- |
 | `erebuz-landing` | repo root | www.erebuz.com |
 | `erebuz-docs` | `apps/docs` | (vercel.app URL until docs domain is set) |
+| `erebuz-deck` | `apps/deck` | erebuz-deck.vercel.app |
 
 ```bash
 # landing
@@ -52,6 +53,9 @@ cd <repo-root> && vercel deploy --prod
 
 # docs
 cd apps/docs && vercel deploy --prod
+
+# deck
+cd apps/deck && vercel deploy --prod
 ```
 
 `apps/app` is not linked to a Vercel project yet — ask before creating one.
