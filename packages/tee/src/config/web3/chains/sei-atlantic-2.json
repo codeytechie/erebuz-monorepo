@@ -1,0 +1,16 @@
+{
+  "id": 1328,
+  "address": "0x0000000000000000000000000000000000000000",
+  "name": "Sei Atlantic-2",
+  "url": "https://evm-rpc-testnet.sei-apis.com",
+  "tokens": [
+    {
+      "address": "0x4fCF1784B31630811181f670Aea7A7bEF803eaED",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USD Coin"
+    }
+  ],
+  "modules": [],
+  "nexus": true
+}

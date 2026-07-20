@@ -1,0 +1,16 @@
+{
+  "id": 1301,
+  "address": "0x0000000000000000000000000000000000000000",
+  "name": "Unichain Sepolia",
+  "url": "https://sepolia.unichain.org",
+  "tokens": [
+    {
+      "address": "0x31d0220469e10c4E71834a79b1f276d740d3768F",
+      "symbol": "USDC",
+      "decimals": 6,
+      "name": "USD Coin"
+    }
+  ],
+  "modules": [],
+  "nexus": true
+}
