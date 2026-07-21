@@ -46,6 +46,7 @@ CLI is logged in as `codeytechie`, team `codeytechies-projects`. Git pushes auto
 | `erebuz-landing` | repo root | www.erebuz.com |
 | `erebuz-docs` | `apps/docs` | (vercel.app URL until docs domain is set) |
 | `erebuz-deck` | `apps/deck` | deck.erebuz.com |
+| `app` | none — deploy from repo root with `VERCEL_PROJECT_ID=prj_5qH483wEHt6Rewz9anbylK7qfq1h VERCEL_ORG_ID=team_gjP7h0CkoHQ6QNudaKlHMuY8 vercel deploy --prod` (project rootDirectory = `apps/app`) | app.erebuz.com |
 
 ```bash
 # landing
@@ -58,7 +59,7 @@ cd apps/docs && vercel deploy --prod
 cd apps/deck && vercel deploy --prod
 ```
 
-`apps/app` is not linked to a Vercel project yet — ask before creating one.
+`apps/app` deploys to the existing `app` project (holds app.erebuz.com) via the env-var override above — do NOT `vercel link` inside `apps/app` (creates a duplicate project) and do not disturb the repo-root `.vercel/` (that's the landing's). Its `NEXT_PUBLIC_TEE_URL` / `NEXT_PUBLIC_TEST_MODE` env lives on the Vercel project.
 
 ## Before pushing
 
