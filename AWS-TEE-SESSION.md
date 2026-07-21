@@ -25,6 +25,29 @@ setup from the first night. It lives at `/home/ubuntu/erebuz-stack/infra/stack/`
   wallet `0zk1qy…` created (works because the POI node is reachable + real Railgun secrets set).
 - **Config source:** compose variable-substitutes from `…/stack/.env` (chmod 600). All secrets
   (PRIVATE_KEY, RAILGUN_MNEMONIC/ENCRYPTION_KEY, RELAY_API_KEY, pkey/pubkey, MONGO_PASSWORD) live there.
+- **Bridge provider:** `BRIDGE_PROVIDER=cctp` (Circle CCTP burn/mint, USDC 1:1 — stable quotes,
+  ~0.90 net on 1 USDC). Added a passthrough to the compose `tee` env (backup `docker-compose.yml.bak-bridge`).
+  Revert to Relay: set `BRIDGE_PROVIDER=relay` in `.env`, then `docker compose up -d tee`.
+  Note: CCTP is USDC-only; discovery + quotes switch to CCTP chains automatically.
+
+## Owner-stack code changes made on the box (NOT in owner's git — tell them)
+Edited under `/home/ubuntu/erebuz-stack/packages/tee/` (backups kept alongside):
+- **`index.ts`** — added `process.on('unhandledRejection'|'uncaughtException')` log-and-continue
+  handlers. The Railgun engine's *background* POI refresh throws async rejections that Node
+  treats as fatal; without this the TEE was **crash-looping** (RestartCount climbing) whenever a
+  shielded note needed POI. Now stable (RestartCount=0). Backup: `index.ts.bak-guard`.
+  **This is a genuine fix the owner should commit.**
+- **`src/services/railgun/index.ts`** — added a `POI_DEBUG`-gated balance log line in
+  `waitForShieldedBalance` (diagnostic; harmless, only logs when `POI_DEBUG` set).
+- **compose + .env** — `POI_DEBUG=1` passthrough (turn off with `POI_DEBUG=0` + `up -d tee`).
+
+### POI works; the earlier "stuck payout" was NOT a POI failure
+Once the crash-loop was guarded, POI generation succeeds (`[poi] Valid:17`). Two routes were
+stuck only because they were **orphaned by switching `BRIDGE_PROVIDER` Relay→CCTP mid-flight**
+(a Relay route half-bridged, and a route whose shielded balance 0.487 < the CCTP payout 0.9).
+Both marked `FAILED` in the DB. **Lesson: don't flip `BRIDGE_PROVIDER` while routes are in
+flight.** Fresh routes created entirely under CCTP complete normally. Funds from the dead routes
+remain spendable in the TEE's Railgun shielded wallet (not lost).
 
 ## SSL / edge
 - **nginx** (system service, `active` + `enabled`) — site `/etc/nginx/sites-available/erebuz-tee.conf`
