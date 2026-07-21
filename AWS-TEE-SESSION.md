@@ -41,6 +41,16 @@ Edited under `/home/ubuntu/erebuz-stack/packages/tee/` (backups kept alongside):
   `waitForShieldedBalance` (diagnostic; harmless, only logs when `POI_DEBUG` set).
 - **compose + .env** — `POI_DEBUG=1` passthrough (turn off with `POI_DEBUG=0` + `up -d tee`).
 
+### Same-chain (dest == hub) delivery fix — `state-machine.ts`
+CCTP leg-2 unconditionally burned hub→dest. When the destination IS the hub chain
+(e.g. Base Sepolia → Sepolia with the Sepolia hub), that's a same-domain CCTP burn,
+which is invalid — the route wedged in `BRIDGING_OUT` waiting for an attestation that
+never comes (funds sat safe in the hub SA). Added a `route.destChainId === hubChainId`
+short-circuit that skips CCTP and transfers the unshielded USDC straight from the hub
+smart account to the recipient. Recovered the wedged route (recipient received funds)
+and covers future same-chain-destination transfers. Backup: `state-machine.ts.bak-samechain`.
+**Owner should commit this too.**
+
 ### POI works; the earlier "stuck payout" was NOT a POI failure
 Once the crash-loop was guarded, POI generation succeeds (`[poi] Valid:17`). Two routes were
 stuck only because they were **orphaned by switching `BRIDGE_PROVIDER` Relay→CCTP mid-flight**
