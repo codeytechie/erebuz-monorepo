@@ -30,6 +30,14 @@ setup from the first night. It lives at `/home/ubuntu/erebuz-stack/infra/stack/`
   Revert to Relay: set `BRIDGE_PROVIDER=relay` in `.env`, then `docker compose up -d tee`.
   Note: CCTP is USDC-only; discovery + quotes switch to CCTP chains automatically.
 
+## Arc Testnet support synced from local (2026-07-22)
+Pushed 6 files local→box + rebuilt (all additive, no regressions, no DB migration):
+`arc-testnet.json` (chain 5042002, USDC-native-gas) + CCTP domain 26 in `cctp/index.ts`;
+`chain.ts` (rate-limit-retrying RPC transport + `unifiedGasToken`); `aa/index.ts`
+(unconditional gas top-up on unified-gas chains, hub-address cache, UserOp-revert
+detection); `private-route.ts` (UTC timestamp parse fix); `test-route-e2e.ts`.
+ChainManager now loads Arc; box-only fixes below all still intact.
+
 ## Owner-stack code changes made on the box (NOT in owner's git — tell them)
 Edited under `/home/ubuntu/erebuz-stack/packages/tee/` (backups kept alongside):
 - **`index.ts`** — added `process.on('unhandledRejection'|'uncaughtException')` log-and-continue
