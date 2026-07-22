@@ -1,6 +1,6 @@
 # AWS TEE deploy — session log
 
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-22
 
 **STATUS: 🟢 LIVE** — https://tee.erebuz.com (TLS) fronting the owner's full stack
 (TEE + Railgun POI node + mongo), signer = the provided key, privacy leg ACTIVE.
@@ -40,6 +40,11 @@ Edited under `/home/ubuntu/erebuz-stack/packages/tee/` (backups kept alongside):
 - **`src/services/railgun/index.ts`** — added a `POI_DEBUG`-gated balance log line in
   `waitForShieldedBalance` (diagnostic; harmless, only logs when `POI_DEBUG` set).
 - **compose + .env** — `POI_DEBUG=1` passthrough (turn off with `POI_DEBUG=0` + `up -d tee`).
+
+### Auto-cancel stale AWAITING_DEPOSIT routes — `state-machine.ts`
+Synced from local (commit "feat(tee): auto-cancel a route still AWAITING_DEPOSIT
+after 5 minutes"). A route with no deposit after `PRIVATE_ROUTE_DEPOSIT_EXPIRY_MS`
+(default 5 min) is marked FAILED. Now on the box + local, alongside the same-chain fix.
 
 ### Same-chain (dest == hub) delivery fix — `state-machine.ts`
 CCTP leg-2 unconditionally burned hub→dest. When the destination IS the hub chain
