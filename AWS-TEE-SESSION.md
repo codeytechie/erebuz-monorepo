@@ -1,9 +1,55 @@
 # AWS TEE deploy — session log
 
-**Last updated:** 2026-07-22
+**Last updated:** 2026-08-10
 
 **STATUS: 🟢 LIVE** — https://tee.erebuz.com (TLS) fronting the owner's full stack
 (TEE + Railgun POI node + mongo), signer = the provided key, privacy leg ACTIVE.
+
+## 2026-08-10 deployment: hosted Railgun + Erebuz Arc routes
+
+The AWS backend now serves both privacy providers through the same API. Railgun
+remains the default and uses Ethereum Sepolia as its privacy hub. The additional
+`arc` quote uses Circle CCTP into the Erebuz Privacy Pool on Arc Testnet.
+
+| Service | Container | Bind | Purpose |
+| --- | --- | --- | --- |
+| TEE | `stack-tee-1` | `127.0.0.1:3000` | quotes, route creation, monitoring and payouts |
+| Railgun POI | `stack-poi-node-1` | `127.0.0.1:8080` | Ethereum Sepolia POI validation |
+| Mongo | `stack-mongo-1` | internal | POI persistence |
+| Arc ASP | `stack-asp-1` | `127.0.0.1:8787` | activated association-set proofs |
+| Arc operator | `stack-asp-operator-1` | internal | automatic Wall8 pool approvals/publications |
+
+Hosted non-secret routing configuration:
+
+- `BRIDGE_PROVIDER=cctp`
+- `DEFAULT_PRIVACY_PROVIDER=railgun`
+- `PRIVACY_HUB_CHAIN_ID=11155111`
+- `ARC_PRIVACY_ASP_URL=http://asp:8787`
+- `PRIVATE_ROUTE_FEE_MIN_USD=0.1`
+- ASP polling is 15 seconds with exponential failure backoff; idle traffic is
+  one Arc pool-root request per interval.
+
+The ASP operator only approves Arc deposits whose transaction hash belongs to a
+`POOL_DEPOSITED` Arc route in the TEE SQLite database. Policy and snapshot data
+are persistent Docker volumes. IPFS uploads are accepted only after the exact
+expected CID is publicly gateway-verified, and the on-chain root plus CID are
+both checked before the operator becomes idle.
+
+Pre-deployment rollback material:
+
+- EBS snapshot: `snap-092816d9b05f95d19` for volume
+  `vol-018823994985a168d` (point in time: 2026-08-10 07:15 UTC).
+- Application-consistent Mongo, SQLite, resolved Compose, Docker inspection,
+  nginx and source backups:
+  `/home/ubuntu/backups/pre-railgun-arc-20260810T0715Z/`.
+
+Verification performed after deployment:
+
+- `https://tee.erebuz.com/` returns `Hello World` over valid TLS;
+- hosted Railgun and Arc quote requests both succeed for Base Sepolia → Arc;
+- the persisted hosted database contains 24 completed Railgun routes;
+- Arc ASP `/health` reports `ready` and the automatic operator is running;
+- the AWS signer has native gas on Ethereum Sepolia, Base Sepolia and Arc.
 
 ---
 
