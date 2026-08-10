@@ -12,28 +12,14 @@ pnpm workspace. Apps live in `apps/*`, shared code in `packages/*`, contracts in
 
 `pnpm dev` runs every workspace dev script in parallel. Do NOT pass an app name to it (`pnpm dev app` breaks — the extra arg is forwarded to every child `next dev`); use the per-app shortcuts above.
 
-## Git: two remotes, keep both in sync
+## Git: two remotes with intentionally separate histories
 
-This repo pushes to **two** remotes, and both must always end up on the same commit:
+The two repositories are separate release lines and must not be aligned to the same commit:
 
-- `origin` → `erebuz-privacy/monorepo` (org repo)
-- `codeytechie` → `codeytechie/erebuz-monorepo` (personal mirror)
+- `origin` points to the sanitized public `erebuz-privacy/monorepo` history.
+- `codeytechie` points to the full private `codeytechie/erebuz-monorepo` history.
 
-**Pushing** — after every commit to `main`, push to both, in this order:
-
-```bash
-git push origin main && git push codeytechie main
-```
-
-**Pulling** — either remote may be ahead (work happens on both). Fetch both, fast-forward from whichever is ahead, then push the other one back level:
-
-```bash
-git fetch origin && git fetch codeytechie
-git pull --ff-only origin main || git pull --ff-only codeytechie main
-git push origin main && git push codeytechie main
-```
-
-Never leave the two remotes on different commits at the end of a session.
+Never merge, rebase, pull, or force one remote's history onto the other. When a change is requested for both repositories, apply and commit it independently on each history, then push each repository's own branch.
 
 **Commits** — conventional-commit style with an app scope, e.g. `feat(landing): …`, `style(docs): …`, `refactor(app): …`.
 
