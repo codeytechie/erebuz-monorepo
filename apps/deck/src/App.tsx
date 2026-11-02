@@ -241,7 +241,7 @@ export default function App() {
           <div style={{ width: '100%', marginInline: 'auto', maxWidth: 1040 }}>
             <img
               src="/diagrams/private-usdc-routes.png"
-              alt="Base Sepolia USDC routed through Circle CCTP and either the Railgun pool or Erebuz pool before arriving on Arc Testnet"
+              alt="Base Sepolia USDC routed through Circle CCTP and either the Railgun pool or Erebuz pool before arriving on Starknet Sepolia"
               style={{ width: '100%', display: 'block' }}
             />
           </div>
